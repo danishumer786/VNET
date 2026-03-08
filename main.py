@@ -7,6 +7,10 @@ FILE_SERVER_URL = os.environ.get("FILE_SERVER_URL", "")
 LOCAL_FILE_PATH = r"C:\MyFileServer\shared\test.txt"
 
 
+async def home(request):
+    return web.Response(text="App Service is running!")
+
+
 async def read_file(request):
     if FILE_SERVER_URL:
         # Azure mode: fetch file over HTTP tunnel
@@ -23,7 +27,9 @@ async def read_file(request):
 
 
 app = web.Application()
+app.router.add_get("/", home)
 app.router.add_get("/read-file", read_file)
 
 if __name__ == "__main__":
-    web.run_app(app, host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8000))
+    web.run_app(app, host="0.0.0.0", port=port)
