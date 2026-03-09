@@ -2,21 +2,21 @@ import os
 import aiohttp
 from aiohttp import web
 
-FILE_PATH = r"C:\MyFileServer\shared\test.txt"
-FILE_SERVER_URL = os.environ.get("FILE_SERVER_URL")
+LOCAL_FILE_PATH = r"C:\MyFileServer\shared\test.txt"
 
 async def home(request):
     return web.Response(text="App Service is running!")
 
 async def read_file(request):
     try:
-        if FILE_SERVER_URL:
+        file_server_url = os.environ.get("FILE_SERVER_URL")
+        if file_server_url:
             async with aiohttp.ClientSession() as session:
-                async with session.get(FILE_SERVER_URL, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                async with session.get(file_server_url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                     text = await resp.text()
                     return web.Response(text=text)
         else:
-            with open(FILE_PATH, "r") as f:
+            with open(LOCAL_FILE_PATH, "r") as f:
                 return web.Response(text=f.read())
     except Exception as e:
         return web.Response(text=f"Error: {str(e)}", status=500)
