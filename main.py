@@ -18,7 +18,7 @@ async def read_file(request):
         else:
             return web.Response(text=f"FILE_SERVER_URL not set. Cannot read local file on Azure.")
     except Exception as e:
-        return web.Response(text=f"Error: {str(e)}", status=500)
+        return web.Response(text=f"Error: {type(e).__name__}: {str(e)}", status=500)
 
 app = web.Application()
 app.router.add_get("/", home)
