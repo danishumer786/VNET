@@ -16,8 +16,7 @@ async def read_file(request):
                     text = await resp.text()
                     return web.Response(text=text)
         else:
-            with open(LOCAL_FILE_PATH, "r") as f:
-                return web.Response(text=f.read())
+            return web.Response(text=f"FILE_SERVER_URL not set. Cannot read local file on Azure.")
     except Exception as e:
         return web.Response(text=f"Error: {str(e)}", status=500)
 
@@ -26,4 +25,5 @@ app.router.add_get("/", home)
 app.router.add_get("/read-file", read_file)
 
 if __name__ == "__main__":
-    web.run_app(app, host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8000))
+    web.run_app(app, host="0.0.0.0", port=port)
